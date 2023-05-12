@@ -5,16 +5,17 @@ import { Contract } from '../../libs/models/src/contract.model';
 import { ContractStatus } from './contractStatus.enum';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ContractService {
 	constructor(
 		@InjectModel(Contract) private contractRepository: typeof Contract,
-		@Inject('USER_SERVICE') private readonly userService,
+		@Inject('USER_SERVICE') private readonly userService: ClientProxy,
 		){}
 
 	async create(createContractDto: CreateContractDto):Promise<Contract> {
-				
+		
 		const workers = await this.userService.getUsersByIDs(createContractDto.worker_id)		
 
 		delete createContractDto.worker_id
@@ -22,7 +23,7 @@ export class ContractService {
 		const contract = await this.contractRepository.create({
 			...createContractDto,
 			status: ContractStatus.ACTIVE
-		})	
+		})
 		
 		await contract.$set('workers', workers)
 		

@@ -1,5 +1,7 @@
+import { Contract } from '@lib/models';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 import { ContractService } from './contract.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
@@ -9,37 +11,37 @@ export class ContractController {
   	constructor(private readonly contractService: ContractService) {}
 
 	@MessagePattern({cmd:'create-contract'})
-	create(@Payload() createContractDto: CreateContractDto) {
+	async create(@Payload() createContractDto: CreateContractDto):Promise<Contract> {
 		return this.contractService.create(createContractDto);
 	}
 
 	@MessagePattern({cmd:'find-all-contract'})
-	findAll() {
+	async findAll():Promise<Contract[]> {
 		return this.contractService.findAll();
 	}
 
 	@MessagePattern({cmd:'find-one-contract'})
-	findOne(@Payload() id: number) {
+	async findOne(@Payload() id: number):Promise<Contract> {
 		return this.contractService.findOne(id);
 	}
 
 	@MessagePattern({cmd:'find-all-by-worker-contract'})
-	findAllByWorker(@Payload() id: number) {
+	async findAllByWorker(@Payload() id: number):Promise<Contract[]> {
 		return this.contractService.findByWorkerId(id);
 	}
 
 	@MessagePattern({cmd:'find-all-by-employer-contract'})
-	findAllByEmployer(@Payload() id: number) {
+	async findAllByEmployer(@Payload() id: number):Promise<Contract[]> {
 		return this.contractService.findByEmployerId(id);
 	}
 
 	@MessagePattern({cmd:'update-contract'})
-	update(@Payload() updateContractDto: UpdateContractDto) {
+	async update(@Payload() updateContractDto: UpdateContractDto) {
 		return this.contractService.update(updateContractDto.id, updateContractDto);
 	}
 
 	@MessagePattern({cmd:'remove-contract'})
-	delete(@Payload() id: number) {
+	async delete(@Payload() id: number):Promise<void> {
 		return this.contractService.delete(id);
 	}
 }
