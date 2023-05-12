@@ -4,32 +4,42 @@ import { ContractService } from './contract.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 
-@Controller()
+@Controller('contracts')
 export class ContractController {
-  constructor(private readonly contractService: ContractService) {}
+  	constructor(private readonly contractService: ContractService) {}
 
-  @MessagePattern('createContract')
-  create(@Payload() createContractDto: CreateContractDto) {
-    return this.contractService.create(createContractDto);
-  }
+	@MessagePattern({cmd:'create-contract'})
+	create(@Payload() createContractDto: CreateContractDto) {
+		return this.contractService.create(createContractDto);
+	}
 
-  @MessagePattern('findAllContract')
-  findAll() {
-    return this.contractService.findAll();
-  }
+	@MessagePattern({cmd:'find-all-contract'})
+	findAll() {
+		return this.contractService.findAll();
+	}
 
-  @MessagePattern('findOneContract')
-  findOne(@Payload() id: number) {
-    return this.contractService.findOne(id);
-  }
+	@MessagePattern({cmd:'find-one-contract'})
+	findOne(@Payload() id: number) {
+		return this.contractService.findOne(id);
+	}
 
-  @MessagePattern('updateContract')
-  update(@Payload() updateContractDto: UpdateContractDto) {
-    return this.contractService.update(updateContractDto.id, updateContractDto);
-  }
+	@MessagePattern({cmd:'find-all-by-worker-contract'})
+	findAllByWorker(@Payload() id: number) {
+		return this.contractService.findByWorkerId(id);
+	}
 
-  @MessagePattern('removeContract')
-  remove(@Payload() id: number) {
-    return this.contractService.remove(id);
-  }
+	@MessagePattern({cmd:'find-all-by-employer-contract'})
+	findAllByEmployer(@Payload() id: number) {
+		return this.contractService.findByEmployerId(id);
+	}
+
+	@MessagePattern({cmd:'update-contract'})
+	update(@Payload() updateContractDto: UpdateContractDto) {
+		return this.contractService.update(updateContractDto.id, updateContractDto);
+	}
+
+	@MessagePattern({cmd:'remove-contract'})
+	delete(@Payload() id: number) {
+		return this.contractService.delete(id);
+	}
 }
