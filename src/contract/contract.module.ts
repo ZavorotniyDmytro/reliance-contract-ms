@@ -9,6 +9,21 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 @Module({
 	imports: [ConfigModule, SequelizeModule.forFeature([Contract, Review,Follower, User, Material, ContractMaterial, Worker])],
 	controllers: [ContractController],
-	providers: [ContractService]
+	providers: [
+		ContractService,
+		{
+			provide: 'MAIN_SERVICE',
+			useFactory: (configService: ConfigService) => (
+			  ClientProxyFactory.create({
+				 transport: Transport.TCP,
+				 options: {
+					host: configService.get('MAIN_SERVICE_HOST'),
+					port: configService.get('MAIN_SERVICE_PORT'),
+				 }
+			  })
+			),
+			inject: [ConfigService],
+		 }
+	]
 })
 export class ContractModule {}

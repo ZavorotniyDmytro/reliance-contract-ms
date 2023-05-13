@@ -6,29 +6,37 @@ import { ContractStatus } from './contractStatus.enum';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { ClientProxy } from '@nestjs/microservices';
+import { IContrantData } from './interfaces/contractData.interface';
+import { IUpdateWorkers } from './interfaces/updateWorkers.interface';
+import { Json } from 'sequelize/types/utils';
 
 @Injectable()
 export class ContractService {
 	constructor(
 		@InjectModel(Contract) private contractRepository: typeof Contract,
-		@Inject('USER_SERVICE') private readonly userService: ClientProxy,
+		@Inject('MAIN_SERVICE') private userService: ClientProxy,
 		){}
 
-	async create(createContractDto: CreateContractDto):Promise<Contract> {
+	
+	async create(createContractDto: CreateContractDto):Promise<Contract> {		
+		let users: User[] = []
+		const ids: number[] = createContractDto.worker_id
 		
-		const workers = await this.userService.getUsersByIDs(createContractDto.worker_id)		
-
 		delete createContractDto.worker_id
-
 		const contract = await this.contractRepository.create({
 			...createContractDto,
 			status: ContractStatus.ACTIVE
 		})
-		
-		await contract.$set('workers', workers)
-		
+		const myObserver = {
+			next: (u: User) => {console.log('Observer got a new value'); users.push(new User(u))
+			},
+			error: (err: Error) => console.error('Observer got an error: ' + err),
+			complete: () => { console.log(JSON.stringify(users));
+			 	contract.$set('workers', users) },
+		};
+		const users$ = this.userService.send<User, number[]>({cmd:'get-users-by-id'}, ids)
+		users$.subscribe(myObserver)
 		return contract
-
 	}
 
 	async findAll():Promise<Contract[]> {

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule as GlobalSequelizeModule } from '@nestjs/sequelize';
 
-import { Resume, 	Review, 	Role, UserRole, UserChat, User,Follower,Chat, Message, Announcement, Contract, ContractMaterial, Material, Worker } from '@lib/models';
+import { Resume, Review, Role, UserRole, UserChat, User, Follower, Chat, Message, Announcement, Contract, ContractMaterial, Material, Worker } from '@lib/models';
 
 
 @Module({

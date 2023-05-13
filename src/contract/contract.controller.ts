@@ -1,10 +1,10 @@
 import { Contract } from '@lib/models';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
 import { ContractService } from './contract.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
+import { IUpdateWorkers } from './interfaces/updateWorkers.interface';
 
 @Controller('contracts')
 export class ContractController {
