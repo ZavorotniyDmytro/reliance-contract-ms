@@ -6,9 +6,6 @@ import { ContractStatus } from './contractStatus.enum';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { IContrantData } from './interfaces/contractData.interface';
-import { IUpdateWorkers } from './interfaces/updateWorkers.interface';
-import { Json } from 'sequelize/types/utils';
 
 @Injectable()
 export class ContractService {

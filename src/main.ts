@@ -6,12 +6,22 @@ import { AppModule } from './app.module';
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const configService = app.get(ConfigService);
-	await app.connectMicroservice<MicroserviceOptions>({
-		transport: Transport.TCP,
+
+	const user = configService.get('RABBITMQ_DEFAULT_USER')
+	const password = configService.get('RABBITMQ_DEFAULT_PASS')
+	const host = configService.get('RABBITMQ_HOST')
+	const queue = configService.get('RABBITMQ_QUEUE_NAME_CONTRACT')
+
+	app.connectMicroservice<MicroserviceOptions>({
+		transport: Transport.RMQ,
 		options: {
-			host: configService.get<string>('CONTRACT_SERVICE_HOST'),
-			port: configService.get<number>('CONTRACT_SERVICE_PORT'),
+			urls: [`amqp://${user}:${password}@${host}`],
+			queue: queue,
+			queueOptions: {
+		   durable: true,
+			},
 		},
+		
 	});
 	
 	app.startAllMicroservices();
