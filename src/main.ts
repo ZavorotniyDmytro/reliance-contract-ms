@@ -18,8 +18,10 @@ async function bootstrap() {
 			urls: [`amqp://${user}:${password}@${host}`],
 			queue: queue,
 			queueOptions: {
-		   durable: true,
+		   	durable: false,
 			},
+			noAck: false,
+      	prefetchCount: 1,
 		},
 		
 	});

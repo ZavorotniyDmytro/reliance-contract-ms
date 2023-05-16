@@ -13,11 +13,13 @@ const MainService = {
 		return ClientProxyFactory.create({
 			transport: Transport.RMQ,
 			options: {
-			  urls: [`amqp://${user}:${password}@${host}`],
-			  queue: queue,
-			  queueOptions: {
-				 durable: true,
-			  },
+				urls: [`amqp://${user}:${password}@${host}`],
+				queue: queue,
+				queueOptions: {
+					durable: false,
+				},
+			  	noAck: false,
+      		prefetchCount: 1,
 			},
 		 })
 	},

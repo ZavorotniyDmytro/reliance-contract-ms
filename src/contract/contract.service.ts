@@ -11,7 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 export class ContractService {
 	constructor(
 		@InjectModel(Contract) private contractRepository: typeof Contract,
-		@Inject('MAIN_SERVICE') private userService: ClientProxy,
+		@Inject('MAIN_SERVICE') private mainService: ClientProxy,
 		){}
 
 	
@@ -31,7 +31,7 @@ export class ContractService {
 			complete: () => { console.log(JSON.stringify(users));
 			 	contract.$set('workers', users) },
 		};
-		const users$ = this.userService.send<User, number[]>({cmd:'get-users-by-id'}, ids)
+		const users$ = this.mainService.send<User, number[]>({cmd:'get-users-by-id'}, ids)
 		users$.subscribe(myObserver)
 		return contract
 	}
